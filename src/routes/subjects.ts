@@ -11,8 +11,8 @@ router.get('/', async (req,res) => {
     try {
     const { search, department, page =1 , limit = 10} = req.query;
 
-    const currentPage = Math.max(1, +page);
-    const limitPerPage = Math.max(1, +limit);
+    const currentPage = Math.max(1,parseInt(String(page), 10) || 1);
+    const limitPerPage = Math.min(Math.max(1, parseInt(String(limit), 10) || 10), 100);  // Max 100 records per page
 
     const offset= (currentPage-1)* limitPerPage;
 
@@ -23,15 +23,15 @@ router.get('/', async (req,res) => {
     if(search){
         filterConditions.push(
             or(
-                ilike(subjects.name, `%{search}%`),
-                ilike(subjects.code, `%{search}%`)
+                ilike(subjects.name, `%${search}%`),
+                ilike(subjects.code, `%${search}%`)
             )
         );
     }
 
     // if department filter exists , match department name
     if(department){
-        filterConditions.push(ilike(departments.name, `$%{department}%`))
+        filterConditions.push(ilike(departments.name, `$%${department}%`))
     }
 
     //combine all filters using AND if any exist
