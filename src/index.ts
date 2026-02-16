@@ -30,6 +30,7 @@ app.use('/api/subjects', subjectsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/classes', classesRouter)
 
+app.set('trust proxy', 1);
 app.use(securityMiddleware);
 
 app.get('/', (req, res) => {
